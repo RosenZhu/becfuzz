@@ -254,7 +254,8 @@ bool count_edges(BPatch_binaryEdit * appBin, BPatch_image *appImage,
 bool instrumentCondition(BPatch_binaryEdit * appBin, BPatch_function * instFunc, BPatch_point * instrumentPoint, 
          Dyninst::Address block_addr, u32 cond_id){
     vector<BPatch_snippet *> cond_args;
-    BPatch_constExpr CondID(cond_id);
+    // BPatch_constExpr CondID(cond_id); //rosen
+    BPatch_constExpr CondID(block_addr);
     cond_args.push_back(&CondID);
 
     BPatch_funcCallExpr instCondExpr(*instFunc, cond_args);
