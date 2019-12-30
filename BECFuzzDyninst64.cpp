@@ -38,6 +38,7 @@ using namespace Dyninst;
 
 static u32 num_conditional, // the number of total conditional edges
             num_indirect,   // the number of total indirect edges
+            num_all,
             max_map_size, // the number of all edges, including potential indirect edges
             condition_id; // assign unique id for each conditional edges
 
@@ -222,11 +223,26 @@ bool count_edges(BPatch_binaryEdit * appBin, BPatch_image *appImage,
 
         for(edge_iter = outgoingEdge.begin(); edge_iter != outgoingEdge.end(); ++edge_iter) {
             //count conditional
+            // if ((*edge_iter)->getType() == CondJumpTaken){
+            //     num_conditional++;
+            // }
+            // else if ((*edge_iter)->getType() == CondJumpNottaken){
+            //       num_conditional++;
+            // } 
+
             if ((*edge_iter)->getType() == CondJumpTaken){
                 num_conditional++;
+                num_all++;
             }
             else if ((*edge_iter)->getType() == CondJumpNottaken){
-                  num_conditional++;
+                num_conditional++;
+                num_all++;
+            } 
+            else if ((*edge_iter)->getType() == NonJump){
+                num_all++;
+            } 
+            else if ((*edge_iter)->getType() == UncondJump){
+                num_all++;
             }        
             
         }
@@ -237,10 +253,16 @@ bool count_edges(BPatch_binaryEdit * appBin, BPatch_image *appImage,
                 
                 if(category == Dyninst::InstructionAPI::c_CallInsn) {//indirect call
                     num_indirect++;
+                    num_all++;
                 }
                 
                 else if(category == Dyninst::InstructionAPI::c_BranchInsn) {//indirect jump
-                     num_indirect++;              
+                     num_indirect++; 
+                     num_all++;             
+                }
+                else if(category == Dyninst::InstructionAPI::c_ReturnInsn) {
+                    //num_indirect++;
+                    num_all++;
                 }
  
             }
@@ -530,7 +552,7 @@ int main (int argc, char **argv){
     ofstream numedges;
     numedges.open (num_file.c_str(), ios::out | ios::app | ios::binary); //write file
     if(numedges.is_open()){
-        numedges << max_map_size << " " << num_conditional << " " << num_indirect << endl; 
+        numedges << max_map_size << " " << num_all << " " << num_conditional << " " << num_indirect <<  endl; 
         //numedges << num_indirect << endl;
     }
     numedges.close();    
