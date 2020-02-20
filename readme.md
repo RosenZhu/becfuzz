@@ -2,16 +2,14 @@
 
 ## Install Dyninst
 
-[the branch](https://github.com/mxz297/dyninst/tree/rerewriting)
+[the branch](https://github.com/mxz297/dyninst)
 
 ```
 git clone https://github.com/mxz297/dyninst.git
 cd dyninst
 git checkout fuzzing
-#git checkout rerewriting
-#git reset --hard 5ebf1c887c712201f4df56cabde6596f2801745c
 ```
-[install instructions](https://github.com/mxz297/dyninst/tree/rerewriting)
+[install instructions](https://github.com/mxz297/dyninst)
 
 ## environment
 ```
@@ -23,20 +21,17 @@ export LD_LIBRARY_PATH=$DYNINST_INSTALL/lib:$BECFUZZ_PATH
 export PATH=$PATH:$BECFUZZ_PATH
 ```
 
-## run fuzzing
-
-1. instrument target programs using BECFuzzDyninst
-
-2. fuzz the instrumented binary
-
-run fuzzing
-
-change PATH in runfuzz.sh 
-
+## test
+in folder becfuzz
 ```
-bash runfuzz.sh output_dir target_bin seed_dir target_params
+mkdir output
+make clean && make all
+./BECFuzzDyninst64 -i /path/to/tcpdump -o ./output/tcpinst -b ./output/
+./output/tcpinst -nr /path/to/input
+```
+run tcpdump without instrumenting
+```
+/path/to/tcpdump -nr /path/to/input
 ```
 
-```
-./runfuzz.sh ../outputs/test ../target-bins/untracer_bins/tcpdump/seed_dir/ ../target-bins/untracer_bins/tcpdump/tcpdump -nr @@
-```
+
