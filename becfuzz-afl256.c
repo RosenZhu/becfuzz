@@ -3455,6 +3455,7 @@ static u8 save_if_interesting(char** argv, void* mem, u32 len, u8 fault) {
   u8  keeping = 0, res;
 
   memset(edge_trace, 0, MAP_SIZE256 >> 3);
+  MEM_BARRIER();
   minimize_bits(edge_trace, trace_bits);
   path_cksum = hash32(edge_trace, MAP_SIZE256 >> 3, HASH_CONST); //rosen
   path_id = path_cksum % MAX_PATH;  //remainder
